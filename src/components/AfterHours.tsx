@@ -7,6 +7,7 @@ import {
   CakeSlice,
   Check,
   Flame,
+  Laptop,
   Music2,
   Pause,
   Play,
@@ -45,6 +46,7 @@ export default function AfterHours() {
   const [dancing, setDancing] = useState(false);
   const [wink, setWink] = useState(false);
   const [round, setRound] = useState(0);
+  const [laptopClosed, setLaptopClosed] = useState(false);
   const playing = usePartyMusic(sound, dancing);
   const busy = action !== null;
 
@@ -147,8 +149,21 @@ export default function AfterHours() {
     setAction(null);
     locked.current = false;
   };
+  const closeLaptop = () => {
+    if (locked.current || laptopClosed) return;
+    locked.current = true;
+    setAction("closing");
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    after(reduced ? 250 : 1200, () => {
+      setLaptopClosed(true);
+      setAction(null);
+      locked.current = false;
+    });
+  };
   const doStep = (index: number) => {
-    if (locked.current || index !== step || step === 4) return;
+    if (locked.current || !laptopClosed || index !== step || step === 4) return;
     if (step === 3) {
       setStep(4);
       setDancing(true);
@@ -190,36 +205,45 @@ export default function AfterHours() {
     setWishes(0);
     setWink(false);
     setRound((v) => v + 1);
+    setLaptopClosed(false);
   };
   const winkAtYou = () => {
     setWink(true);
     after(800, () => setWink(false));
   };
   const message =
-    action === "blowing"
-      ? "Foooooo… make it a good wish."
-      : action === "cutting"
-        ? "Steady wings. Very important slice."
-        : action === "eating"
-          ? "Nom. Nom. Nom."
-          : [
-              "First, make a wish.",
-              "Wish made. Time for cake.",
-              "A slice for the birthday boy.",
-              "Okay. Now we dance.",
-              dancing ? "Night owl. Party animal." : "Taking a tiny breather.",
-            ][step];
+    action === "closing"
+      ? "Office closed. Birthday open."
+      : !laptopClosed
+        ? "Work can wait. It’s your birthday."
+        : action === "blowing"
+          ? "Foooooo… make it a good wish."
+          : action === "cutting"
+            ? "Steady wings. Very important slice."
+            : action === "eating"
+              ? "Nom. Nom. Nom."
+              : [
+                  "First, make a wish.",
+                  "Wish made. Time for cake.",
+                  "A slice for the birthday boy.",
+                  "Okay. Now we dance.",
+                  dancing
+                    ? "Night owl. Party animal."
+                    : "Taking a tiny breather.",
+                ][step];
   const phase =
     action ??
-    (
-      [
-        "ready",
-        "candles-out",
-        "cake-cut",
-        "cake-eaten",
-        dancing ? "dancing" : "paused",
-      ] as const
-    )[step];
+    (!laptopClosed
+      ? "working"
+      : (
+          [
+            "ready",
+            "candles-out",
+            "cake-cut",
+            "cake-eaten",
+            dancing ? "dancing" : "paused",
+          ] as const
+        )[step]);
 
   return (
     <div
@@ -319,7 +343,9 @@ export default function AfterHours() {
           <span>
             {step === 4
               ? "work mode off. party mode on."
-              : "okay, close the laptop."}
+              : laptopClosed
+                ? "office closed. birthday open."
+                : "okay, close the laptop."}
           </span>
         </div>
         <h1 className="birthday-title">
@@ -366,7 +392,16 @@ export default function AfterHours() {
               candlesOut={candlesOut}
               wink={wink}
               dancing={dancing}
+              laptopClosed={laptopClosed}
             />
+            {!laptopClosed ? (
+              <button
+                className="laptop-hitbox"
+                aria-label="Close the owl’s laptop"
+                disabled={busy}
+                onClick={closeLaptop}
+              />
+            ) : null}
             <button
               className="owl-hitbox"
               aria-label="Give the birthday owl a wink"
@@ -374,7 +409,7 @@ export default function AfterHours() {
             />
             <button
               className="cake-hitbox"
-              disabled={busy || step === 4}
+              disabled={busy || !laptopClosed || step === 4}
               aria-label={
                 step < 4
                   ? steps[step].label + " by tapping the cake"
@@ -386,6 +421,9 @@ export default function AfterHours() {
           <BirthdayGift key={round} />
         </div>
         <div className="wish-zone">
+          {step === 4 ? (
+            <h2 className="dance-mantra">LEADERS DON’T SLEEP.</h2>
+          ) : null}
           <p
             className="wish-instruction"
             role="status"
@@ -398,9 +436,20 @@ export default function AfterHours() {
             className="wish-button"
             disabled={busy}
             aria-busy={busy}
-            onClick={() => (step === 4 ? setDancing((v) => !v) : doStep(step))}
+            onClick={() =>
+              !laptopClosed
+                ? closeLaptop()
+                : step === 4
+                  ? setDancing((v) => !v)
+                  : doStep(step)
+            }
           >
-            {step === 4 ? (
+            {!laptopClosed ? (
+              <>
+                <Laptop size={20} aria-hidden="true" />
+                {busy ? "Logging off…" : "Close the laptop"}
+              </>
+            ) : step === 4 ? (
               <>
                 {dancing ? (
                   <Pause size={19} aria-hidden="true" />
@@ -416,6 +465,7 @@ export default function AfterHours() {
                       blowing: "Making a wish…",
                       cutting: "Slicing…",
                       eating: "Nom nom…",
+                      closing: "Logging off…",
                     }[action!]
                   : steps[step].label}
                 <ArrowRight size={21} aria-hidden="true" />
@@ -427,9 +477,9 @@ export default function AfterHours() {
               <button
                 key={short}
                 className={`step-button ${i < step ? "step-complete" : ""} ${i === step ? "step-next" : ""}`}
-                disabled={busy || i !== step}
+                disabled={busy || !laptopClosed || i !== step}
                 aria-label={`Step ${i + 1}: ${label}${i < step ? " (complete)" : ""}`}
-                aria-current={i === step ? "step" : undefined}
+                aria-current={laptopClosed && i === step ? "step" : undefined}
                 onClick={() => doStep(i)}
               >
                 {i < step ? (
@@ -448,14 +498,15 @@ export default function AfterHours() {
             </button>
           ) : (
             <span className="cake-hint">
-              one little button. four birthday moments.
+              {laptopClosed
+                ? "one little button. four birthday moments."
+                : "one last click. then it’s party time."}
             </span>
           )}
         </div>
       </main>
       <footer className="party-footer">
-        <span>Leaders don’t sleep.</span>
-        <span>But today? They eat cake.</span>
+        <span>WITH LOVE, YOUR PEOPLE.</span>
         <svg
           width="50"
           height="27"

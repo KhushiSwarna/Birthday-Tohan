@@ -2,7 +2,12 @@ import { expect, test, type Page } from "@playwright/test";
 
 const mainAction = (page: Page, name: string) =>
   page.getByRole("button", { name, exact: true });
+const enterParty = async (page: Page) => {
+  await mainAction(page, "Close the laptop").click();
+  await expect(mainAction(page, "Blow candles")).toBeEnabled();
+};
 const finishStory = async (page: Page) => {
+  await enterParty(page);
   for (const action of [
     "Blow candles",
     "Cut the cake",
@@ -29,6 +34,16 @@ test("birthday opens with music enabled and future steps locked", async ({
     "aria-pressed",
     "true",
   );
+  await expect(mainAction(page, "Step 1: Blow candles")).toBeDisabled();
+  await expect(page.locator(".birthday-owl")).toHaveAttribute(
+    "data-laptop",
+    "open",
+  );
+  await enterParty(page);
+  await expect(page.locator(".birthday-owl")).toHaveAttribute(
+    "data-laptop",
+    "closed",
+  );
   await expect(mainAction(page, "Step 1: Blow candles")).toBeEnabled();
   for (const label of [
     "Step 2: Cut the cake",
@@ -48,6 +63,7 @@ test("the owl blows, cuts, eats, dances, pauses, and starts over", async ({
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/");
+  await enterParty(page);
   await mainAction(page, "Blow candles").click();
   await expect(page.locator(".birthday-owl")).toHaveAttribute(
     "data-action",
@@ -123,11 +139,12 @@ test("the owl blows, cuts, eats, dances, pauses, and starts over", async ({
   await mainAction(page, "Start again").click();
   await expect(page.locator(".birthday-page")).toHaveAttribute(
     "data-phase",
-    "ready",
+    "working",
   );
   await expect(page.locator(".cake-slice")).toHaveCSS("opacity", "0");
   await expect(page.locator(".candle-flame").first()).toHaveCSS("opacity", "1");
   await expect(mainAction(page, "Step 2: Cut the cake")).toBeDisabled();
+  await enterParty(page);
   await mainAction(page, "Blow candles").click();
   await expect(mainAction(page, "Cut the cake")).toBeEnabled();
   expect(errors).toEqual([]);
@@ -139,6 +156,7 @@ test("music starts on interaction and stays muted when the user switches it off"
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/");
+  await enterParty(page);
   await mainAction(page, "Blow candles").click();
   await expect(page.locator(".birthday-page")).toHaveAttribute(
     "data-music-state",
@@ -169,6 +187,7 @@ test("step buttons, cake shortcut, and present work with keyboard and touch", as
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
+  await enterParty(page);
   const blow = mainAction(page, "Step 1: Blow candles");
   await blow.focus();
   await blow.press("Enter");
@@ -223,6 +242,7 @@ test("all steps work with reduced motion across phone, tablet, desktop, and land
     await expect(page.locator(".dance-floor")).toHaveCSS("opacity", "1");
     await expect(page.locator(".cake-slice")).toHaveCSS("opacity", "0");
     await mainAction(page, "Start again").click();
+    await enterParty(page);
     await expect(mainAction(page, "Blow candles")).toBeEnabled();
   }
 });

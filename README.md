@@ -1,6 +1,6 @@
 # Tohan Bhaiya’s birthday party
 
-A playful birthday surprise with an original cartoon owl, birthday candles, confetti, and a little present. No product gallery or trading dashboard.
+A playful birthday surprise with a cartoon night owl, a laptop to close, and a four-step cake party.
 
 ## Run locally
 
@@ -40,8 +40,10 @@ You can also connect this folder as a Git repository in Vercel. Use `npm run bui
 
 ## The little surprises
 
+- **Close the laptop** clocks the owl out of work: its wing shuts the lid, the laptop slides away, and the party hat and cake appear. The cake steps then unlock.
 - **Blow candles → Cut the cake → Take a bite → Let’s dance.** Each step has its own button and owl animation. Future steps unlock in order; tapping the cake also performs the next action.
 - The owl puffs out the candles, cuts a slice, lifts it to its beak, and dances in headphones. The final step turns the page into a disco with a mirror ball, a dance floor, and moving lights.
+- **LEADERS DON’T SLEEP.** appears as a larger headline below the animation on the final dancing screen.
 - **Pause the dance** takes a breather. **Start again** restores the whole cake, candles, and sequence. Fireworks, confetti, and decorations celebrate the wish and the dance.
 - Tap the owl to see its happy face. Its eyes follow the pointer on desktop.
 - Open the present for a little birthday note.
@@ -58,7 +60,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-Browser tests cover step ordering, actual candle/cake/dance changes, pause, restart, music playback and mute, keyboard/touch controls, reduced motion, and phone, tablet, desktop, and landscape layouts. Tests run in desktop Chromium and a mobile Chromium context.
+Browser tests cover laptop closing and step ordering, candle/cake/dance changes, the final slogan and its separation from the animation, pause/restart, music playback/mute, reduced motion, and phone, tablet, desktop, and landscape layouts. Tests run in desktop Chromium and a mobile Chromium context.
 
 ## Edit
 

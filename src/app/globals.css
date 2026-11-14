@@ -1485,6 +1485,122 @@ button:active {
     right: -18%;
   }
 }
+.laptop-closed .laptop,
+.laptop-closing-hand {
+  opacity: 0;
+}
+.laptop-open .cake,
+.laptop-open .party-hat {
+  opacity: 0;
+}
+.laptop-lid {
+  transform-origin: 400px 519px;
+}
+.is-closing .laptop-lid {
+  animation: close-laptop 0.75s cubic-bezier(0.55, 0.06, 0.34, 1) both;
+}
+.is-closing .laptop {
+  animation: put-laptop-away 1.2s ease-in-out both;
+}
+.is-closing .laptop-closing-hand {
+  animation: closing-wing 1.2s ease-in-out both;
+}
+.laptop-closed .party-hat {
+  transform-origin: 470px 146px;
+  animation: hat-arrives 0.6s cubic-bezier(0.2, 0.8, 0.3, 1.3);
+}
+.laptop-hitbox {
+  position: absolute;
+  left: 32%;
+  top: 58%;
+  width: 36%;
+  height: 32%;
+  min-height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+}
+.laptop-hitbox:hover {
+  background: #fff8eb15;
+}
+.cake-hitbox:disabled {
+  pointer-events: none;
+}
+@keyframes close-laptop {
+  0%,
+  15% {
+    transform: scaleY(1);
+  }
+  90%,
+  100% {
+    transform: scaleY(0.04);
+  }
+}
+@keyframes put-laptop-away {
+  0%,
+  65% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-240px, 25px) rotate(-7deg);
+  }
+}
+@keyframes closing-wing {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  65% {
+    opacity: 1;
+    transform: translate(0, 125px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-90px, 130px);
+  }
+}
+@keyframes hat-arrives {
+  from {
+    opacity: 0;
+    transform: scale(0.2) rotate(-20deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+.dance-mantra {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3.2vw, 48px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  color: #42314c;
+  max-width: 720px;
+  margin: 0 auto 12px;
+}
+.dance-party .wish-instruction {
+  font-size: 14px;
+  color: #75607a;
+  margin-bottom: 22px;
+}
+@media (max-width: 700px) {
+  .dance-mantra {
+    font-size: clamp(23px, 6.9vw, 30px);
+    max-width: 100%;
+    margin-bottom: 10px;
+  }
+  .dance-party .wish-instruction {
+    font-size: 12px;
+    margin-bottom: 18px;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

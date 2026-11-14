@@ -1,9 +1,10 @@
 "use client";
 
-import { forwardRef } from "react";
+import { forwardRef, useId } from "react";
 
 export type BirthdayStep = 0 | 1 | 2 | 3 | 4;
-export type BirthdayAction = "blowing" | "cutting" | "eating" | null;
+export type BirthdayAction =
+  "closing" | "blowing" | "cutting" | "eating" | null;
 
 const BirthdayOwl = forwardRef<
   SVGSVGElement,
@@ -13,26 +14,32 @@ const BirthdayOwl = forwardRef<
     step: BirthdayStep;
     action: BirthdayAction;
     dancing: boolean;
+    laptopClosed: boolean;
   }
->(function BirthdayOwl({ candlesOut, wink, step, action, dancing }, ref) {
+>(function BirthdayOwl(
+  { candlesOut, wink, step, action, dancing, laptopClosed },
+  ref,
+) {
+  const id = useId().replace(/:/g, "");
   const cut = step >= 2 || action === "cutting";
   return (
     <svg
       ref={ref}
       viewBox="0 0 800 610"
       fill="none"
-      className={`birthday-owl ${candlesOut ? "wish-made" : ""} ${wink ? "is-winking" : ""} ${action ? `is-${action}` : ""} ${cut ? "cake-is-cut" : ""} ${step >= 3 ? "cake-is-eaten" : ""} ${step === 4 ? "disco-scene" : ""} ${dancing ? "is-dancing" : ""}`}
+      className={`birthday-owl ${candlesOut ? "wish-made" : ""} ${wink ? "is-winking" : ""} ${action ? `is-${action}` : ""} ${cut ? "cake-is-cut" : ""} ${step >= 3 ? "cake-is-eaten" : ""} ${step === 4 ? "disco-scene" : ""} ${dancing ? "is-dancing" : ""} ${laptopClosed ? "laptop-closed" : "laptop-open"}`}
       data-step={step}
+      data-laptop={laptopClosed ? "closed" : "open"}
       data-action={action ?? "idle"}
       aria-hidden="true"
     >
       <defs>
-        <mask id="cake-rest">
+        <mask id={`${id}-cake-rest`}>
           <rect x="270" y="375" width="260" height="155" fill="white" />
           <path d="M400 415 470 393 515 416V510L400 520Z" fill="black" />
         </mask>
         <pattern
-          id="dance-tiles"
+          id={`${id}-dance-tiles`}
           width="70"
           height="40"
           patternUnits="userSpaceOnUse"
@@ -41,11 +48,11 @@ const BirthdayOwl = forwardRef<
           <rect width="35" height="20" fill="#f6c7b4" />
           <rect x="35" y="20" width="35" height="20" fill="#f6c7b4" />
         </pattern>
-        <clipPath id="hat-clip">
+        <clipPath id={`${id}-hat-clip`}>
           <path d="m425 146 44-118 66 107Z" />
         </clipPath>
         <pattern
-          id="candle-stripe"
+          id={`${id}-candle-stripe`}
           width="12"
           height="12"
           patternUnits="userSpaceOnUse"
@@ -64,7 +71,7 @@ const BirthdayOwl = forwardRef<
         <g className="dance-floor">
           <path
             d="M170 515H630L720 600H80Z"
-            fill="url(#dance-tiles)"
+            fill={`url(#${id}-dance-tiles)`}
             stroke="#9880ae"
             strokeWidth="2"
           />
@@ -239,14 +246,21 @@ const BirthdayOwl = forwardRef<
             <circle cx="422" cy="306" r="3" />
             <circle cx="430" cy="316" r="4" />
           </g>
-          <path d="m425 146 44-118 66 107Z" fill="#ffd366" />
-          <g clipPath="url(#hat-clip)" stroke="#ec806b" strokeWidth="18">
-            <path d="m431 81 81 40m-80-11 81 40m-65-99 63 32" />
+          <g className="party-hat">
+            <path d="m425 146 44-118 66 107Z" fill="#ffd366" />
+            <g
+              clipPath={`url(#${id}-hat-clip)`}
+              stroke="#ec806b"
+              strokeWidth="18"
+            >
+              <path d="m431 81 81 40m-80-11 81 40m-65-99 63 32" />
+            </g>
+            <path d="m425 146 44-118 66 107Z" />
+            <path d="m420 147 119-13" stroke="#332b36" strokeWidth="9" />
+            <circle cx="469" cy="27" r="13" fill="#b9b0dc" />
           </g>
-          <path d="m425 146 44-118 66 107Z" />
-          <path d="m420 147 119-13" stroke="#332b36" strokeWidth="9" />
-          <circle cx="469" cy="27" r="13" fill="#b9b0dc" />
           <path
+            className="belly-feathers"
             d="m371 352 6 7 6-7m28 0 6 7 6-7m-30 9 6 7 6-7"
             stroke="#bb9165"
             strokeWidth="3"
@@ -294,7 +308,10 @@ const BirthdayOwl = forwardRef<
         </g>
         <g className="cake">
           <ellipse cx="400" cy="526" rx="150" ry="18" fill="#a5b98e" />
-          <g className="cake-body" mask={cut ? "url(#cake-rest)" : undefined}>
+          <g
+            className="cake-body"
+            mask={cut ? `url(#${id}-cake-rest)` : undefined}
+          >
             <path d="M289 415v79c0 32 222 32 222 0v-79" fill="#ef977f" />
             <path d="M289 452q111 29 222 0" stroke="#c66d5d" strokeWidth="3" />
             <ellipse cx="400" cy="415" rx="111" ry="29" fill="#fff2d7" />
@@ -322,7 +339,7 @@ const BirthdayOwl = forwardRef<
                   width="12"
                   height={i === 1 ? 57 : 49}
                   rx="3"
-                  fill="url(#candle-stripe)"
+                  fill={`url(#${id}-candle-stripe)`}
                   strokeWidth="2.5"
                 />
                 <path d={`M${x} ${i === 1 ? 347 : 357}v-9`} strokeWidth="2" />
@@ -385,6 +402,81 @@ const BirthdayOwl = forwardRef<
             <path d="m402 479 104-22" stroke="#c66d5d" />
             <path d="m438 410 7 2m14-9 4 3" stroke="#a5b98e" strokeWidth="4" />
           </g>
+        </g>
+        <g className="laptop">
+          <ellipse
+            cx="400"
+            cy="543"
+            rx="162"
+            ry="12"
+            fill="#d4c7bd"
+            stroke="none"
+          />
+          <g className="laptop-lid">
+            <rect
+              x="270"
+              y="354"
+              width="260"
+              height="165"
+              rx="13"
+              fill="#8f899d"
+            />
+            <rect
+              x="282"
+              y="367"
+              width="236"
+              height="138"
+              rx="6"
+              fill="#eae4ee"
+              strokeWidth="2"
+            />
+            <circle cx="400" cy="361" r="2" fill="#332b36" stroke="none" />
+            <path d="M283 389h234" stroke="#c4b7cd" strokeWidth="2" />
+            <circle cx="294" cy="378" r="3" fill="#ee947c" stroke="none" />
+            <circle cx="305" cy="378" r="3" fill="#ffd366" stroke="none" />
+            <circle cx="316" cy="378" r="3" fill="#a5b98e" stroke="none" />
+            <rect
+              x="301"
+              y="405"
+              width="84"
+              height="10"
+              rx="4"
+              fill="#b5a7c3"
+              stroke="none"
+            />
+            <path
+              d="M301 432h158m-158 15h181m-181 15h130"
+              stroke="#c6bccc"
+              strokeWidth="6"
+            />
+            <text
+              x="400"
+              y="492"
+              textAnchor="middle"
+              fontFamily="Fredoka Variable, sans-serif"
+              fontSize="13"
+              fill="#716177"
+              stroke="none"
+            >
+              just one more email…
+            </text>
+          </g>
+          <path
+            d="M270 515h260l34 18q-3 10-22 10H258q-19 0-22-10Z"
+            fill="#b9b0c5"
+          />
+          <path
+            d="M237 533h326m-199-18-5 12h82l-5-12"
+            stroke="#82798d"
+            strokeWidth="2"
+          />
+        </g>
+        <g className="laptop-closing-hand">
+          <path
+            d="M549 315q21 29-13 67l-36-8q-9-12 5-17l19-3-6-20Z"
+            fill="#b77a52"
+          />
+          <path d="m504 369 21 4" stroke="#80573f" strokeWidth="2" />
         </g>
         <g className="knife-hand">
           <path d="M555 346q-27 19-48 47l-18-10q14-42 41-63Z" fill="#b77a52" />
