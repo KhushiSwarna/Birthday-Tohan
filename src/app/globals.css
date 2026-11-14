@@ -1,0 +1,1017 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-ink: #332b36;
+  --color-paper: #fff8eb;
+  --font-sans: "Inter Variable", Arial, sans-serif;
+  --font-display: "Fredoka Variable", "Arial Rounded MT Bold", sans-serif;
+}
+
+:root {
+  --ink: #332b36;
+  --paper: #fff8eb;
+  --coral: #ee947c;
+  --purple: #b9b0dc;
+  --sage: #a5b98e;
+  --yellow: #ffd366;
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+button {
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button:focus-visible,
+a:focus-visible {
+  outline: 3px dashed var(--ink);
+  outline-offset: 6px;
+}
+button {
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    background 0.2s;
+}
+button:active {
+  transform: translateY(3px);
+}
+::selection {
+  background: var(--purple);
+  color: var(--ink);
+}
+.birthday-page {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background: radial-gradient(#baaa8b20 0.8px, transparent 0.8px);
+  background-size: 8px 8px;
+  transition: background-color 0.8s;
+}
+.birthday-page.party-on {
+  background-color: #fff0de;
+}
+.party-header,
+.birthday-main,
+.party-footer {
+  position: relative;
+  z-index: 2;
+}
+.party-fireworks,
+.party-decorations {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.party-fireworks {
+  z-index: 1;
+}
+.party-decorations {
+  z-index: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+.decorations-visible {
+  opacity: 1;
+  visibility: visible;
+}
+.party-bunting {
+  position: absolute;
+  top: 65px;
+  width: 43%;
+  height: auto;
+}
+.bunting-left {
+  left: -4%;
+  transform: rotate(7deg);
+}
+.bunting-right {
+  right: -4%;
+  transform: rotate(-7deg) scaleX(-1);
+}
+.extra-balloon {
+  position: absolute;
+  width: 108px;
+  height: auto;
+  opacity: 0.7;
+}
+.extra-balloon-0 {
+  left: 2%;
+  top: 52%;
+  transform: rotate(-12deg);
+}
+.extra-balloon-1 {
+  left: 11%;
+  top: 28%;
+  width: 80px;
+  transform: rotate(13deg);
+}
+.extra-balloon-2 {
+  right: 1%;
+  top: 53%;
+  transform: rotate(15deg);
+}
+.extra-balloon-3 {
+  right: 10%;
+  top: 30%;
+  width: 75px;
+  transform: rotate(-14deg);
+}
+.backdrop-sparkle {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  opacity: 0.75;
+}
+.backdrop-sparkle-0 {
+  left: 6%;
+  top: 23%;
+}
+.backdrop-sparkle-1 {
+  left: 21%;
+  top: 65%;
+  width: 30px;
+}
+.backdrop-sparkle-2 {
+  right: 7%;
+  top: 18%;
+  width: 35px;
+}
+.backdrop-sparkle-3 {
+  right: 18%;
+  top: 78%;
+}
+.backdrop-sparkle-4 {
+  left: 5%;
+  top: 83%;
+  width: 28px;
+}
+.backdrop-sparkle-5 {
+  right: 25%;
+  top: 37%;
+  width: 24px;
+}
+.party-streamer {
+  position: absolute;
+  width: 50px;
+  height: 190px;
+  top: 5%;
+  opacity: 0.65;
+}
+.streamer-left {
+  left: 2%;
+  transform: rotate(-20deg);
+}
+.streamer-right {
+  right: 2%;
+  transform: rotate(20deg);
+}
+.party-header {
+  height: 90px;
+  margin: 0 auto;
+  max-width: 1500px;
+  padding: 0 5.5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.party-logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 650;
+  font-size: 11px;
+  letter-spacing: 1.2px;
+}
+.logo-star {
+  font-size: 21px;
+  margin-left: 8px;
+  vertical-align: middle;
+  color: #8a705a;
+}
+.party-sound {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 9px 15px;
+  min-height: 44px;
+  border: 1.5px solid #a99c90;
+  border-radius: 99px;
+  font-size: 11px;
+  background: #fffaf0;
+}
+.party-sound:hover {
+  background: #e7e1f2;
+  transform: rotate(-3deg);
+}
+.birthday-main {
+  max-width: 1350px;
+  margin: auto;
+  position: relative;
+  padding: 10px 24px 0;
+  text-align: center;
+}
+.top-doodle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 1px;
+  margin-bottom: 8px;
+  transform: rotate(-5deg);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 17px;
+  color: #78645c;
+}
+.top-doodle svg {
+  width: 83px;
+  height: 32px;
+}
+.birthday-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin: 0;
+  position: relative;
+  z-index: 2;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+.birthday-title > span {
+  display: block;
+}
+.birthday-title .greeting {
+  font-size: clamp(42px, 6vw, 82px);
+  color: #c7654e;
+  letter-spacing: 0.025em;
+  transform: rotate(-2deg);
+}
+.birthday-name {
+  font-size: clamp(62px, 8.3vw, 117px);
+  margin-top: 7px;
+  text-shadow:
+    2px 3px 0 #fff8eb,
+    4px 6px 0 #d5c7b6;
+  transform: rotate(1deg);
+}
+.party-scene {
+  height: 405px;
+  position: relative;
+  max-width: 1080px;
+  margin: -5px auto 0;
+}
+.party-illustration {
+  position: relative;
+  width: 620px;
+  max-width: 72vw;
+  margin: 0 auto;
+  top: -9px;
+}
+.birthday-owl {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+.happy-eye,
+.candle-smoke {
+  opacity: 0;
+}
+.open-eye,
+.happy-eye {
+  transition: opacity 0.15s;
+}
+.wish-made .open-eye,
+.is-winking .open-eye {
+  opacity: 0;
+}
+.wish-made .happy-eye,
+.is-winking .happy-eye {
+  opacity: 1;
+}
+.candle-flame {
+  transition:
+    opacity 0.2s,
+    transform 0.25s;
+}
+.wish-made .candle-flame {
+  opacity: 0;
+  transform: scale(0.2);
+}
+.wish-made .candle-smoke {
+  animation: smoke 1.6s ease-out forwards;
+}
+.birthday-owl:not(.wish-made) .candle-flame {
+  animation: flicker 1.5s ease-in-out 5;
+}
+.birthday-owl:not(.wish-made) .candle-flame:nth-child(2) {
+  animation-delay: 0.3s;
+}
+.balloon {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: sway 3.5s ease-in-out 2 alternate;
+}
+.balloon-right {
+  animation-delay: 0.4s;
+  animation-direction: alternate-reverse;
+}
+.owl-hitbox,
+.cake-hitbox {
+  position: absolute;
+  border: 0;
+  background: transparent;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 45%;
+}
+.owl-hitbox {
+  left: 33%;
+  top: 29%;
+  width: 34%;
+  height: 23%;
+}
+.cake-hitbox {
+  left: 34%;
+  top: 57%;
+  width: 32%;
+  height: 31%;
+  border-radius: 30%;
+}
+.cake-hitbox:hover {
+  background: #fff6d715;
+}
+.cake-hitbox:focus-visible,
+.owl-hitbox:focus-visible {
+  outline-offset: 3px;
+}
+.scribble {
+  position: absolute;
+  z-index: 3;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  pointer-events: none;
+}
+.scribble-left {
+  left: 5%;
+  top: 75px;
+  transform: rotate(-9deg);
+  color: #716157;
+}
+.scribble-left svg {
+  margin: 6px 0 0 40px;
+  transform: rotate(-12deg);
+}
+.gift-wrap {
+  position: absolute;
+  right: 2%;
+  top: 175px;
+  width: 185px;
+  z-index: 3;
+  transform: rotate(7deg);
+}
+.gift-button {
+  display: block;
+  width: 120px;
+  height: 120px;
+  margin: auto;
+  border: 0;
+  background: none;
+  padding: 0;
+}
+.gift-button svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.gift-button:hover {
+  transform: rotate(-8deg) scale(1.06);
+}
+.gift-caption {
+  font-family: var(--font-display);
+  font-size: 16px;
+  display: block;
+  margin-top: 7px;
+}
+.gift-note {
+  position: absolute;
+  bottom: 155px;
+  left: -8px;
+  width: 200px;
+  min-height: 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 1.2;
+  transform: rotate(-11deg);
+  opacity: 0;
+  transition:
+    opacity 0.3s,
+    transform 0.4s;
+}
+.gift-open .gift-note {
+  padding: 19px 12px;
+  background: #fff0bf;
+  border: 2px solid var(--ink);
+  border-radius: 9px;
+  box-shadow: 3px 4px 0 var(--ink);
+  opacity: 1;
+  transform: rotate(-6deg);
+}
+.gift-note span {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  margin-top: 10px;
+}
+.gift-lid {
+  transform-origin: 65px 45px;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.3, 1.3);
+}
+.gift-open .gift-lid {
+  transform: translateY(-20px) rotate(-18deg);
+}
+.wish-zone {
+  position: relative;
+  z-index: 5;
+  padding: 7px 0 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.wish-instruction {
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 1.3;
+  margin: 0 0 19px;
+}
+.wish-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  background: var(--yellow);
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: 5px 5px 0 var(--ink);
+  padding: 18px 28px;
+  min-width: 239px;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.035em;
+  transform: rotate(-2deg);
+}
+.wish-button:hover {
+  background: #ffdf8c;
+  transform: translate(-2px, -2px) rotate(0);
+  box-shadow: 7px 7px 0 var(--ink);
+}
+.wish-button:active {
+  transform: translate(4px, 4px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+.cake-hint {
+  display: block;
+  font-size: 11px;
+  color: #776a61;
+  margin-top: 20px;
+  line-height: 1.6;
+}
+.party-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 23px 24px 25px;
+  font-size: 11px;
+  color: #796d64;
+}
+.party-footer span:first-child {
+  font-weight: 600;
+  color: #554a47;
+}
+.party-footer svg {
+  margin-left: 7px;
+  color: #7d8f69;
+}
+.party-confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  overflow: hidden;
+}
+.confetti-piece {
+  position: absolute;
+  top: -25px;
+  opacity: 0;
+  border: 1px solid #332b3650;
+}
+.confetti-0 {
+  background: var(--coral);
+}
+.confetti-1 {
+  background: var(--purple);
+}
+.confetti-2 {
+  background: var(--sage);
+}
+.confetti-3 {
+  background: var(--yellow);
+}
+.confetti-4 {
+  background: #fff8eb;
+}
+@keyframes flicker {
+  0%,
+  100% {
+    transform: rotate(-3deg) scale(0.97);
+  }
+  50% {
+    transform: rotate(4deg) scale(1.04);
+  }
+}
+@keyframes sway {
+  from {
+    transform: rotate(-3deg);
+  }
+  to {
+    transform: rotate(3deg);
+  }
+}
+@keyframes smoke {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+}
+@media (min-height: 1000px) and (min-width: 1000px) {
+  .birthday-main {
+    padding-top: 25px;
+  }
+  .party-scene {
+    height: 460px;
+  }
+  .party-illustration {
+    width: 690px;
+  }
+  .wish-zone {
+    padding-top: 15px;
+  }
+  .party-header {
+    height: 100px;
+  }
+  .party-footer {
+    padding-bottom: 35px;
+  }
+}
+@media (min-width: 1800px) {
+  .birthday-page {
+    display: flex;
+    flex-direction: column;
+  }
+  .party-header {
+    width: 100%;
+  }
+  .birthday-main {
+    width: 100%;
+    margin: auto;
+  }
+  .party-footer {
+    margin-top: auto;
+  }
+}
+@media (max-width: 1000px) {
+  .party-scene {
+    height: 390px;
+  }
+  .party-illustration {
+    width: 590px;
+    max-width: 80vw;
+  }
+  .scribble-left {
+    left: 0;
+    font-size: 18px;
+  }
+  .gift-wrap {
+    right: 0;
+    top: 200px;
+    width: 145px;
+  }
+  .gift-button {
+    width: 95px;
+    height: 95px;
+  }
+  .gift-caption {
+    font-size: 14px;
+  }
+  .gift-note {
+    bottom: 135px;
+    left: -40px;
+    width: 170px;
+    font-size: 18px;
+  }
+  .party-header {
+    height: 80px;
+  }
+  .birthday-title .greeting {
+    font-size: 6.8vw;
+  }
+  .birthday-name {
+    font-size: 9vw;
+  }
+}
+@media (max-width: 700px) {
+  .party-bunting {
+    top: 74px;
+    width: 48%;
+  }
+  .extra-balloon {
+    width: 64px;
+    opacity: 0.45;
+  }
+  .extra-balloon-0 {
+    left: -22px;
+    top: 65%;
+  }
+  .extra-balloon-1 {
+    left: -27px;
+    top: 25%;
+    width: 50px;
+  }
+  .extra-balloon-2 {
+    right: -25px;
+    top: 63%;
+  }
+  .extra-balloon-3 {
+    right: -26px;
+    top: 28%;
+    width: 50px;
+  }
+  .backdrop-sparkle {
+    width: 24px;
+    height: 24px;
+    opacity: 0.5;
+  }
+  .backdrop-sparkle-0 {
+    left: 3%;
+    top: 19%;
+  }
+  .backdrop-sparkle-2 {
+    right: 1%;
+    top: 16%;
+  }
+  .backdrop-sparkle-3 {
+    right: 5%;
+    top: 79%;
+  }
+  .backdrop-sparkle-5 {
+    display: none;
+  }
+  .party-streamer {
+    width: 24px;
+    height: 100px;
+    opacity: 0.4;
+    top: 9%;
+  }
+  .party-header {
+    height: 75px;
+    padding: 0 20px;
+    gap: 10px;
+  }
+  .party-logo {
+    font-size: 8px;
+    letter-spacing: 0.6px;
+    gap: 6px;
+  }
+  .party-logo > svg {
+    width: 23px;
+    height: 27px;
+  }
+  .logo-star {
+    font-size: 17px;
+    margin-left: 4px;
+  }
+  .party-sound {
+    font-size: 10px;
+    padding: 8px 10px;
+    gap: 7px;
+    min-height: 44px;
+  }
+  .party-sound svg {
+    width: 16px;
+  }
+  .birthday-main {
+    padding: 8px 16px 0;
+  }
+  .top-doodle {
+    font-size: 14px;
+    margin-bottom: 15px;
+    gap: 0;
+    margin-top: 8px;
+  }
+  .top-doodle svg {
+    width: 58px;
+    height: 27px;
+  }
+  .birthday-title .greeting {
+    font-size: clamp(29px, 7.9vw, 50px);
+    letter-spacing: 0.015em;
+  }
+  .birthday-name {
+    font-size: clamp(36px, 10.4vw, 68px);
+    letter-spacing: -0.035em;
+    margin-top: 10px;
+    text-shadow:
+      1px 2px 0 var(--paper),
+      3px 4px 0 #d5c7b6;
+  }
+  .party-scene {
+    height: 360px;
+    margin-top: 18px;
+    max-width: 530px;
+  }
+  .party-illustration {
+    width: 530px;
+    max-width: calc(100vw + 40px);
+    left: 50%;
+    margin: 0;
+    transform: translateX(-50%);
+    top: 18px;
+  }
+  .scribble-left {
+    left: 0;
+    top: 7px;
+    font-size: 16px;
+    line-height: 1.15;
+    transform: rotate(-9deg);
+  }
+  .scribble-left svg {
+    width: 45px;
+    height: 43px;
+    margin: 0 0 0 12px;
+  }
+  .gift-wrap {
+    right: -6px;
+    top: 210px;
+    width: 112px;
+    transform: rotate(9deg);
+  }
+  .gift-button {
+    width: 82px;
+    height: 82px;
+  }
+  .gift-caption {
+    font-size: 12px;
+    margin-top: 2px;
+  }
+  .gift-note {
+    bottom: 112px;
+    left: -43px;
+    width: 151px;
+    font-size: 17px;
+  }
+  .gift-open .gift-note {
+    padding: 13px 9px;
+  }
+  .gift-note span {
+    font-size: 10px;
+    margin-top: 8px;
+  }
+  .wish-zone {
+    padding: 5px 0 15px;
+  }
+  .wish-instruction {
+    font-size: 17px;
+    margin-bottom: 18px;
+  }
+  .wish-button {
+    font-size: 12px;
+    padding: 16px 24px;
+    min-width: 225px;
+    border-radius: 12px;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .cake-hint {
+    font-size: 10px;
+    margin-top: 20px;
+  }
+  .party-footer {
+    font-size: 9px;
+    gap: 5px;
+    padding-top: 20px;
+    padding-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .party-footer svg {
+    width: 33px;
+    height: 22px;
+    margin-left: 2px;
+  }
+}
+@media (max-width: 420px) {
+  .party-scene {
+    height: 305px;
+  }
+  .party-illustration {
+    width: 450px;
+    top: 24px;
+  }
+  .gift-wrap {
+    top: 193px;
+    right: -5px;
+    width: 102px;
+  }
+  .gift-button {
+    width: 70px;
+    height: 70px;
+  }
+  .gift-caption {
+    font-size: 11px;
+  }
+  .scribble-left {
+    font-size: 14px;
+    top: 6px;
+  }
+  .gift-note {
+    width: 141px;
+    left: -44px;
+    bottom: 96px;
+    font-size: 16px;
+  }
+  .wish-instruction {
+    font-size: 16px;
+  }
+  .party-footer {
+    padding-top: 20px;
+  }
+}
+@media (max-width: 350px) {
+  .party-logo {
+    font-size: 7px;
+  }
+  .party-sound {
+    font-size: 9px;
+    gap: 5px;
+    padding: 7px 8px;
+  }
+  .logo-star {
+    display: none;
+  }
+  .party-header {
+    padding: 0 16px;
+  }
+  .birthday-name {
+    font-size: 10.2vw;
+  }
+  .birthday-title .greeting {
+    font-size: 7.6vw;
+  }
+  .party-scene {
+    height: 274px;
+  }
+  .party-illustration {
+    width: 402px;
+    top: 25px;
+  }
+  .gift-wrap {
+    top: 175px;
+    width: 85px;
+  }
+  .gift-caption {
+    font-size: 10px;
+  }
+  .gift-button {
+    width: 63px;
+    height: 63px;
+  }
+  .scribble-left {
+    font-size: 13px;
+  }
+  .wish-instruction {
+    font-size: 14px;
+  }
+  .wish-zone {
+    padding-top: 9px;
+  }
+  .party-footer {
+    font-size: 8px;
+  }
+}
+/* On phones, the present opens beneath the scene instead of covering the owl. */
+@media (max-width: 700px) {
+  .gift-wrap {
+    display: contents;
+  }
+  .gift-button {
+    position: absolute;
+    right: 9px;
+    top: 210px;
+    transform: rotate(9deg);
+  }
+  .gift-caption {
+    position: absolute;
+    right: 0;
+    top: 294px;
+    width: 112px;
+    transform: rotate(9deg);
+  }
+  .gift-note {
+    left: 50%;
+    right: auto;
+    top: 365px;
+    bottom: auto;
+    width: 240px;
+    font-size: 19px;
+    pointer-events: none;
+  }
+  .gift-open .gift-note {
+    transform: translateX(-50%) rotate(-2deg);
+  }
+  .party-scene:has(.gift-open) {
+    margin-bottom: 85px;
+  }
+}
+@media (max-width: 420px) {
+  .gift-button {
+    top: 193px;
+  }
+  .gift-caption {
+    top: 265px;
+    width: 102px;
+  }
+  .gift-note {
+    top: 315px;
+  }
+}
+@media (max-width: 350px) {
+  .gift-button {
+    top: 175px;
+  }
+  .gift-caption {
+    top: 240px;
+    width: 85px;
+  }
+  .gift-note {
+    top: 284px;
+    width: 225px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *:before,
+  *:after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .party-confetti {
+    display: none;
+  }
+  .party-fireworks {
+    display: none;
+  }
+  .birthday-title > span,
+  .party-illustration {
+    opacity: 1 !important;
+  }
+  .wish-made .candle-smoke {
+    opacity: 0;
+  }
+}
