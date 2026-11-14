@@ -40,11 +40,13 @@ You can also connect this folder as a Git repository in Vercel. Use `npm run bui
 
 ## The little surprises
 
-- **Make a wish** or tap the cake to blow out the candles. Bunting, balloons, streamers, confetti, and fireworks join the party. **One more wish?** relights the candles, blows them out again, and starts a fresh celebration on every press.
+- **Blow candles → Cut the cake → Take a bite → Let’s dance.** Each step has its own button and owl animation. Future steps unlock in order; tapping the cake also performs the next action.
+- The owl puffs out the candles, cuts a slice, lifts it to its beak, and dances in headphones. The final step turns the page into a disco with a mirror ball, a dance floor, and moving lights.
+- **Pause the dance** takes a breather. **Start again** restores the whole cake, candles, and sequence. Fireworks, confetti, and decorations celebrate the wish and the dance.
 - Tap the owl to see its happy face. Its eyes follow the pointer on desktop.
 - Open the present for a little birthday note.
-- Sound starts off. Turn it on for a short celebration chime; mute remains available during the celebration.
-- All controls support keyboard and touch. Reduced motion keeps the decorations and candle feedback, with fireworks, confetti, and decorative motion switched off.
+- Music defaults to on, with a visible off/on toggle. An original tune is synthesized locally, with a stronger beat for the dance. Where the browser blocks autoplay, it starts on the first tap or key press. It pauses when the tab is hidden, and stays muted if the visitor switches it off.
+- All controls support keyboard and touch. Reduced motion keeps the complete four-step story and its final poses, with fireworks, confetti, and choreography switched off.
 
 ## Check
 
@@ -56,11 +58,12 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-Browser tests cover the greeting, removed content, candles, replay, present, owl, audio controls, reduced motion, and overflow on phone, tablet, desktop, and landscape sizes. Tests run in desktop Chromium and a mobile Chromium context.
+Browser tests cover step ordering, actual candle/cake/dance changes, pause, restart, music playback and mute, keyboard/touch controls, reduced motion, and phone, tablet, desktop, and landscape layouts. Tests run in desktop Chromium and a mobile Chromium context.
 
 ## Edit
 
-- `src/components/AfterHours.tsx`: birthday copy, party interactions, and audio.
+- `src/components/AfterHours.tsx`: birthday copy and the four-step sequence.
+- `src/components/usePartyMusic.ts`: locally synthesized music and autoplay handling.
 - `src/components/BirthdayOwl.tsx`: original vector illustration.
 - `src/app/globals.css`: colors, typography, layout, and responsive rules.
 - `src/app/layout.tsx`: page title, sharing text, and local font imports.

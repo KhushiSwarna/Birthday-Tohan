@@ -2,26 +2,54 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { ArrowRight, RotateCcw, Volume2, VolumeX } from "lucide-react";
-import BirthdayOwl from "./BirthdayOwl";
+import {
+  ArrowRight,
+  CakeSlice,
+  Check,
+  Flame,
+  Music2,
+  Pause,
+  Play,
+  RotateCcw,
+  Utensils,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
+import BirthdayOwl, {
+  type BirthdayAction,
+  type BirthdayStep,
+} from "./BirthdayOwl";
+import BirthdayGift from "./BirthdayGift";
 import PartyFireworks from "./PartyFireworks";
 import PartyDecorations from "./PartyDecorations";
+import usePartyMusic from "./usePartyMusic";
+
+const steps = [
+  { label: "Blow candles", short: "Blow", Icon: Flame },
+  { label: "Cut the cake", short: "Cut", Icon: CakeSlice },
+  { label: "Take a bite", short: "Eat", Icon: Utensils },
+  { label: "Let’s dance", short: "Dance", Icon: Music2 },
+];
 
 export default function AfterHours() {
   const stage = useRef<HTMLDivElement>(null);
   const owl = useRef<SVGSVGElement>(null);
-  const audio = useRef<AudioContext | null>(null);
   const celebration = useRef<gsap.core.Timeline | null>(null);
-  const winkTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const candleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [wishes, setWishes] = useState(0);
+  const timers = useRef(new Set<ReturnType<typeof setTimeout>>());
+  const locked = useRef(false);
+  const [step, setStep] = useState<BirthdayStep>(0);
+  const [action, setAction] = useState<BirthdayAction>(null);
   const [candlesOut, setCandlesOut] = useState(false);
-  const [sound, setSound] = useState(false);
-  const [gift, setGift] = useState(false);
+  const [wishes, setWishes] = useState(0);
+  const [sound, setSound] = useState(true);
+  const [dancing, setDancing] = useState(false);
   const [wink, setWink] = useState(false);
-  const madeWish = wishes > 0;
+  const [round, setRound] = useState(0);
+  const playing = usePartyMusic(sound, dancing);
+  const busy = action !== null;
 
   useEffect(() => {
+    const pending = timers.current;
     const mm = gsap.matchMedia();
     mm.add("(prefers-reduced-motion: no-preference)", () => {
       const ctx = gsap.context(() => {
@@ -46,62 +74,21 @@ export default function AfterHours() {
     return () => {
       mm.revert();
       celebration.current?.kill();
-      if (winkTimer.current) clearTimeout(winkTimer.current);
-      if (candleTimer.current) clearTimeout(candleTimer.current);
-      if (audio.current && audio.current.state !== "closed")
-        void audio.current.close();
+      pending.forEach(clearTimeout);
+      pending.clear();
     };
   }, []);
 
-  const toggleSound = () => {
-    if (sound && audio.current && audio.current.state !== "closed")
-      void audio.current.close();
-    setSound(!sound);
+  const after = (ms: number, callback: () => void) => {
+    const timer = setTimeout(() => {
+      timers.current.delete(timer);
+      callback();
+    }, ms);
+    timers.current.add(timer);
   };
 
-  const chime = () => {
-    if (!sound) return;
-    try {
-      if (audio.current && audio.current.state !== "closed")
-        void audio.current.close();
-      const ctx = new AudioContext();
-      audio.current = ctx;
-      [523.25, 659.25, 783.99, 1046.5].forEach((note, i) => {
-        const oscillator = ctx.createOscillator();
-        const gain = ctx.createGain();
-        oscillator.type = "sine";
-        oscillator.frequency.value = note;
-        gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.12);
-        gain.gain.linearRampToValueAtTime(
-          0.075,
-          ctx.currentTime + i * 0.12 + 0.03,
-        );
-        gain.gain.exponentialRampToValueAtTime(
-          0.001,
-          ctx.currentTime + i * 0.12 + 0.9,
-        );
-        oscillator.connect(gain);
-        gain.connect(ctx.destination);
-        oscillator.start(ctx.currentTime + i * 0.12);
-        oscillator.stop(ctx.currentTime + i * 0.12 + 1);
-        if (i === 3)
-          oscillator.onended = () => {
-            if (ctx.state !== "closed") void ctx.close();
-          };
-      });
-    } catch {
-      /* The party works with sound off, too. */
-    }
-  };
-
-  const makeWish = () => {
-    if (candleTimer.current) clearTimeout(candleTimer.current);
-    if (madeWish) {
-      setCandlesOut(false);
-      candleTimer.current = setTimeout(() => setCandlesOut(true), 700);
-    } else setCandlesOut(true);
+  const burst = () => {
     setWishes((v) => v + 1);
-    chime();
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     celebration.current?.kill();
     const pieces = stage.current?.querySelectorAll(".confetti-piece") ?? [];
@@ -138,19 +125,6 @@ export default function AfterHours() {
         0.15,
       )
       .fromTo(
-        stage.current?.querySelector(".party-illustration") ?? [],
-        { y: 0, rotate: -1.5 },
-        {
-          y: -12,
-          rotate: 1.5,
-          duration: 0.3,
-          yoyo: true,
-          repeat: 1,
-          ease: "power1.inOut",
-        },
-        0,
-      )
-      .fromTo(
         pieces,
         { y: -80, x: 0, opacity: 1, rotate: 0 },
         {
@@ -168,16 +142,91 @@ export default function AfterHours() {
       );
   };
 
+  const finish = (next: BirthdayStep) => {
+    setStep(next);
+    setAction(null);
+    locked.current = false;
+  };
+  const doStep = (index: number) => {
+    if (locked.current || index !== step || step === 4) return;
+    if (step === 3) {
+      setStep(4);
+      setDancing(true);
+      burst();
+      return;
+    }
+    locked.current = true;
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (step === 0) {
+      setAction("blowing");
+      after(reduced ? 180 : 650, () => {
+        setCandlesOut(true);
+        burst();
+      });
+      after(reduced ? 350 : 1250, () => finish(1));
+    } else if (step === 1) {
+      setAction("cutting");
+      after(reduced ? 350 : 1450, () => finish(2));
+    } else {
+      setAction("eating");
+      after(reduced ? 350 : 1800, () => finish(3));
+    }
+  };
+
+  const reset = () => {
+    timers.current.forEach(clearTimeout);
+    timers.current.clear();
+    celebration.current?.kill();
+    gsap.set(stage.current?.querySelectorAll(".confetti-piece") ?? [], {
+      opacity: 0,
+    });
+    locked.current = false;
+    setAction(null);
+    setStep(0);
+    setCandlesOut(false);
+    setDancing(false);
+    setWishes(0);
+    setWink(false);
+    setRound((v) => v + 1);
+  };
   const winkAtYou = () => {
     setWink(true);
-    if (winkTimer.current) clearTimeout(winkTimer.current);
-    winkTimer.current = setTimeout(() => setWink(false), 800);
+    after(800, () => setWink(false));
   };
+  const message =
+    action === "blowing"
+      ? "Foooooo… make it a good wish."
+      : action === "cutting"
+        ? "Steady wings. Very important slice."
+        : action === "eating"
+          ? "Nom. Nom. Nom."
+          : [
+              "First, make a wish.",
+              "Wish made. Time for cake.",
+              "A slice for the birthday boy.",
+              "Okay. Now we dance.",
+              dancing ? "Night owl. Party animal." : "Taking a tiny breather.",
+            ][step];
+  const phase =
+    action ??
+    (
+      [
+        "ready",
+        "candles-out",
+        "cake-cut",
+        "cake-eaten",
+        dancing ? "dancing" : "paused",
+      ] as const
+    )[step];
 
   return (
     <div
       ref={stage}
-      className={`birthday-page ${madeWish ? "party-on" : ""}`}
+      className={`birthday-page ${wishes ? "party-on" : ""} ${step === 4 ? "dance-party" : ""} ${step === 4 && !dancing ? "dance-paused" : ""}`}
+      data-phase={phase}
+      data-music-state={playing ? "playing" : sound ? "waiting" : "muted"}
       onPointerMove={(e) => {
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
           return;
@@ -197,7 +246,9 @@ export default function AfterHours() {
         });
       }}
     >
-      <PartyDecorations visible={madeWish} />
+      <div className="dance-light dance-light-left" aria-hidden="true" />
+      <div className="dance-light dance-light-right" aria-hidden="true" />
+      <PartyDecorations visible={wishes > 0} />
       <PartyFireworks celebration={wishes} />
       <header className="party-header">
         <a
@@ -235,16 +286,24 @@ export default function AfterHours() {
         </a>
         <button
           className="party-sound"
-          onClick={toggleSound}
+          onClick={() => setSound((v) => !v)}
           aria-pressed={sound}
-          aria-label={sound ? "Mute party sound" : "Enable party sound"}
+          aria-label={sound ? "Turn music off" : "Turn music on"}
         >
           {sound ? (
             <Volume2 size={19} aria-hidden="true" />
           ) : (
             <VolumeX size={19} aria-hidden="true" />
           )}
-          <span>Sound {sound ? "on" : "off"}</span>
+          <span>Music {sound ? "on" : "off"}</span>
+          <span
+            className={`music-indicator ${playing ? "music-playing" : ""}`}
+            aria-hidden="true"
+          >
+            <i />
+            <i />
+            <i />
+          </span>
         </button>
       </header>
       <main id="birthday" className="birthday-main">
@@ -257,7 +316,11 @@ export default function AfterHours() {
               strokeLinecap="round"
             />
           </svg>
-          <span>okay, close the laptop.</span>
+          <span>
+            {step === 4
+              ? "work mode off. party mode on."
+              : "okay, close the laptop."}
+          </span>
         </div>
         <h1 className="birthday-title">
           <span className="greeting">HAPPY BIRTHDAY</span>{" "}
@@ -266,9 +329,19 @@ export default function AfterHours() {
         <div className="party-scene">
           <div className="scribble scribble-left">
             <span>
-              our favourite
-              <br />
-              night owl.
+              {step === 4 ? (
+                <>
+                  he’s got
+                  <br />
+                  moves.
+                </>
+              ) : (
+                <>
+                  our favourite
+                  <br />
+                  night owl.
+                </>
+              )}
             </span>
             <svg
               width="70"
@@ -286,7 +359,14 @@ export default function AfterHours() {
             </svg>
           </div>
           <div className="party-illustration">
-            <BirthdayOwl ref={owl} candlesOut={candlesOut} wink={wink} />
+            <BirthdayOwl
+              ref={owl}
+              step={step}
+              action={action}
+              candlesOut={candlesOut}
+              wink={wink}
+              dancing={dancing}
+            />
             <button
               className="owl-hitbox"
               aria-label="Give the birthday owl a wink"
@@ -294,80 +374,83 @@ export default function AfterHours() {
             />
             <button
               className="cake-hitbox"
+              disabled={busy || step === 4}
               aria-label={
-                madeWish
-                  ? "Make another birthday wish"
-                  : "Blow out the birthday candles"
+                step < 4
+                  ? steps[step].label + " by tapping the cake"
+                  : "Birthday cake — all steps complete"
               }
-              onClick={makeWish}
+              onClick={() => doStep(step)}
             />
           </div>
-          <div className={`gift-wrap ${gift ? "gift-open" : ""}`}>
-            <div className="gift-note" role="status" aria-live="polite">
-              {gift ? (
-                <>
-                  Best. Bhaiya. Ever.<span>Love, your people ♡</span>
-                </>
-              ) : null}
-            </div>
-            <button
-              className="gift-button"
-              onClick={() => setGift(!gift)}
-              aria-expanded={gift}
-              aria-label={
-                gift ? "Close birthday present" : "Open birthday present"
-              }
-            >
-              <svg viewBox="0 0 130 130" fill="none" aria-hidden="true">
-                <g
-                  stroke="#332b36"
-                  strokeWidth="3"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                >
-                  <path d="m27 57 79-5 5 61-80 5Z" fill="#b9b0dc" />
-                  <path d="m60 55 20-1 4 62-20 1Z" fill="#fff0ce" />
-                  <g className="gift-lid">
-                    <path d="m21 46 87-6 2 20-87 6Z" fill="#b9b0dc" />
-                    <path d="m59 44 20-1 1 19-20 2Z" fill="#fff0ce" />
-                    <path
-                      d="M68 43C31 40 29 13 47 20c11 4 19 20 21 23Zm0 0c36-8 34-34 18-25-10 6-16 22-18 25Z"
-                      fill="#fff0ce"
-                    />
-                  </g>
-                  <path d="m38 95 6 3m47-21 5 4m-6 17 5-1" stroke="#8b7bae" />
-                </g>
-              </svg>
-            </button>
-            <span className="gift-caption">a little something ↗</span>
-          </div>
+          <BirthdayGift key={round} />
         </div>
         <div className="wish-zone">
-          <p className="wish-instruction" role="status" aria-live="polite">
-            {madeWish
-              ? candlesOut
-                ? "Wish made. Party mode: ON!"
-                : "Another wish. Make it a good one."
-              : "Make a wish. We’ll handle the confetti."}
+          <p
+            className="wish-instruction"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {message}
           </p>
-          <button className="wish-button" onClick={makeWish}>
-            {madeWish ? (
+          <button
+            className="wish-button"
+            disabled={busy}
+            aria-busy={busy}
+            onClick={() => (step === 4 ? setDancing((v) => !v) : doStep(step))}
+          >
+            {step === 4 ? (
               <>
-                <RotateCcw size={20} aria-hidden="true" />
-                ONE MORE WISH?
+                {dancing ? (
+                  <Pause size={19} aria-hidden="true" />
+                ) : (
+                  <Play size={19} aria-hidden="true" />
+                )}
+                {dancing ? "Pause the dance" : "Keep dancing"}
               </>
             ) : (
               <>
-                MAKE A WISH
+                {busy
+                  ? {
+                      blowing: "Making a wish…",
+                      cutting: "Slicing…",
+                      eating: "Nom nom…",
+                    }[action!]
+                  : steps[step].label}
                 <ArrowRight size={21} aria-hidden="true" />
               </>
             )}
           </button>
-          <span className="cake-hint">
-            {madeWish
-              ? "Here’s to your happiest year yet. ♡"
-              : "psst… you can tap the cake, too."}
-          </span>
+          <nav className="birthday-steps" aria-label="Birthday party steps">
+            {steps.map(({ short, label, Icon }, i) => (
+              <button
+                key={short}
+                className={`step-button ${i < step ? "step-complete" : ""} ${i === step ? "step-next" : ""}`}
+                disabled={busy || i !== step}
+                aria-label={`Step ${i + 1}: ${label}${i < step ? " (complete)" : ""}`}
+                aria-current={i === step ? "step" : undefined}
+                onClick={() => doStep(i)}
+              >
+                {i < step ? (
+                  <Check size={15} aria-hidden="true" />
+                ) : (
+                  <Icon size={15} aria-hidden="true" />
+                )}
+                <span>{short}</span>
+              </button>
+            ))}
+          </nav>
+          {step > 0 ? (
+            <button className="start-again" onClick={reset} disabled={busy}>
+              <RotateCcw size={13} aria-hidden="true" />
+              Start again
+            </button>
+          ) : (
+            <span className="cake-hint">
+              one little button. four birthday moments.
+            </span>
+          )}
         </div>
       </main>
       <footer className="party-footer">

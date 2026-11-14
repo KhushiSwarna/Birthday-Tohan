@@ -63,7 +63,7 @@ button:active {
 .birthday-page {
   position: relative;
   min-height: 100svh;
-  overflow: hidden;
+  overflow: clip;
   isolation: isolate;
   background: radial-gradient(#baaa8b20 0.8px, transparent 0.8px);
   background-size: 8px 8px;
@@ -991,6 +991,500 @@ button:active {
     width: 225px;
   }
 }
+/* The owl's four little birthday acts. SVG origins use illustration coordinates. */
+.birthday-page {
+  transition: background-color 1s;
+}
+.birthday-page.dance-party {
+  background-color: #e7dbf5;
+}
+.dance-party .greeting {
+  color: #9470aa;
+}
+.dance-party .birthday-name {
+  text-shadow:
+    2px 3px 0 #e7dbf5,
+    4px 6px 0 #c2a8d3;
+}
+.dance-party .wish-button {
+  background: #c0a4dd;
+}
+.dance-party .wish-zone {
+  padding-top: 52px;
+}
+.dance-light {
+  position: fixed;
+  top: 10%;
+  width: 45%;
+  height: 85%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transform-origin: 50% 0;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+.dance-light-left {
+  left: -3%;
+  background: linear-gradient(#f7c58120, #fff5c580);
+}
+.dance-light-right {
+  right: -3%;
+  background: linear-gradient(#b8c6f520, #adcbef70);
+}
+.dance-party .dance-light {
+  opacity: 1;
+  animation: spotlight-sweep 4.3s ease-in-out infinite alternate;
+}
+.dance-party .dance-light-right {
+  animation-direction: alternate-reverse;
+}
+.dance-paused .dance-light {
+  animation-play-state: paused;
+}
+.music-indicator {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 13px;
+  width: 12px;
+  opacity: 0.3;
+}
+.music-indicator i {
+  display: block;
+  width: 2px;
+  height: 5px;
+  background: currentColor;
+  border-radius: 2px;
+}
+.music-playing {
+  opacity: 1;
+}
+.music-playing i {
+  animation: equalizer 0.65s ease-in-out infinite alternate;
+}
+.music-playing i:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.music-playing i:nth-child(3) {
+  animation-delay: -0.15s;
+}
+.wish-button {
+  text-transform: uppercase;
+}
+.wish-button:disabled {
+  cursor: default;
+  opacity: 0.8;
+  transform: rotate(-2deg);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.cake-hitbox:disabled {
+  cursor: default;
+  background: transparent;
+}
+.birthday-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  width: min(100%, 350px);
+  margin-top: 24px;
+}
+.step-button {
+  min-height: 44px;
+  border: 1.5px solid #c8bbae;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 5px;
+  font-size: 11px;
+  background: #fffaf0;
+}
+.step-button:disabled {
+  cursor: default;
+}
+.step-button:not(.step-complete):not(.step-next) {
+  opacity: 0.4;
+}
+.step-button.step-complete {
+  border-color: #8fa27d;
+  background: #eaf0df;
+  color: #526b48;
+}
+.step-button.step-next {
+  border: 2px solid var(--ink);
+  background: #ffedba;
+}
+.step-button.step-next:disabled {
+  opacity: 0.75;
+}
+.start-again {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 9px;
+  min-height: 40px;
+  padding: 5px 12px;
+  font-size: 10px;
+  color: #716157;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.start-again:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.birthday-steps + .cake-hint {
+  margin-top: 14px;
+}
+.blow-beak,
+.yum-beak,
+.owl-breath,
+.cake-crumbs,
+.cake-slice,
+.knife-hand,
+.cake-cut-line,
+.cake-inside,
+.owl-headphones,
+.dance-floor,
+.disco-ball,
+.music-notes,
+.yum-bubble {
+  opacity: 0;
+}
+.owl-character {
+  transform-origin: 400px 520px;
+}
+.owl-wing-left {
+  transform-origin: 257px 300px;
+}
+.owl-wing-right {
+  transform-origin: 543px 300px;
+}
+.owl-foot-left {
+  transform-origin: 280px 525px;
+}
+.owl-foot-right {
+  transform-origin: 510px 525px;
+}
+.is-blowing .normal-beak,
+.is-eating .normal-beak {
+  opacity: 0;
+}
+.is-blowing .blow-beak {
+  opacity: 1;
+}
+.is-blowing .open-eye {
+  opacity: 0;
+}
+.is-blowing .happy-eye {
+  opacity: 1;
+}
+.is-blowing .owl-character {
+  animation: owl-puff 1.25s ease-in-out;
+}
+.is-blowing .owl-breath {
+  opacity: 1;
+  animation: little-puff 0.65s ease-out 2;
+}
+.birthday-owl.is-blowing .candle-flame {
+  animation: flame-bend 0.65s ease-in forwards;
+}
+.cake-is-cut .cake-cut-line {
+  opacity: 1;
+}
+.cake-is-cut .cake-inside {
+  opacity: 1;
+}
+.cake-is-cut .candles {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.cake-slice {
+  transform-origin: 450px 450px;
+}
+.cake-is-cut .cake-slice {
+  opacity: 1;
+  transform: translate(82px, 16px) rotate(6deg);
+}
+.is-cutting .knife-hand {
+  opacity: 1;
+  transform-origin: 510px 345px;
+  animation: cut-the-cake 1.45s ease-in-out both;
+}
+.is-cutting .owl-wing-right {
+  animation: cutting-wing 1.45s ease-in-out both;
+}
+.is-cutting .cake-slice {
+  animation: slide-the-slice 1.45s ease-in-out both;
+}
+.is-eating .yum-beak {
+  opacity: 1;
+  animation: nom-nom 0.3s 0.7s 3;
+  transform-origin: 400px 295px;
+}
+.is-eating .cake-slice {
+  opacity: 1;
+  animation: eat-the-slice 1.8s ease-in-out both;
+}
+.is-eating .owl-wing-right {
+  animation: eating-wing 1.8s ease-in-out both;
+}
+.is-eating .owl-character {
+  animation: happy-munch 1.8s ease-in-out;
+}
+.cake-is-eaten .cake-slice {
+  opacity: 0;
+}
+.cake-is-eaten .cake-crumbs {
+  opacity: 1;
+}
+.cake-is-eaten:not(.disco-scene) .yum-bubble {
+  opacity: 1;
+}
+.disco-scene .owl-headphones,
+.disco-scene .dance-floor,
+.disco-scene .disco-ball,
+.disco-scene .music-notes {
+  opacity: 1;
+}
+.disco-scene .cake {
+  transform: translateY(22px) scale(0.8);
+  transform-origin: 400px 526px;
+  transition: transform 0.6s;
+}
+.is-dancing .owl-character {
+  animation: owl-groove 1.0714s ease-in-out infinite;
+}
+.is-dancing .owl-wing-left {
+  animation: wing-party 0.5357s ease-in-out infinite alternate;
+}
+.is-dancing .owl-wing-right {
+  animation: wing-party-right 0.5357s ease-in-out infinite alternate;
+}
+.is-dancing .owl-foot-left {
+  animation: foot-tap 0.5357s ease-in-out infinite alternate;
+}
+.is-dancing .owl-foot-right {
+  animation: foot-tap 0.5357s -0.5357s ease-in-out infinite alternate-reverse;
+}
+.is-dancing .disco-ball {
+  transform-origin: 360px 40px;
+  animation: mirror-ball 2.14s ease-in-out infinite alternate;
+}
+.is-dancing .music-notes {
+  animation: music-bop 1.0714s ease-in-out infinite alternate;
+}
+@keyframes owl-puff {
+  0%,
+  100% {
+    transform: rotate(0) translateY(0);
+  }
+  35%,
+  70% {
+    transform: rotate(3deg) translateY(12px);
+  }
+}
+@keyframes little-puff {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.9);
+    transform-origin: 400px 300px;
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(18px) scale(1.1);
+    transform-origin: 400px 300px;
+  }
+}
+@keyframes flame-bend {
+  from {
+    transform: rotate(0) scale(1);
+  }
+  70% {
+    transform: rotate(-45deg) scale(0.7, 0.45);
+  }
+  to {
+    transform: rotate(-65deg) scale(0.3, 0.15);
+    opacity: 0;
+  }
+}
+@keyframes cut-the-cake {
+  0% {
+    transform: translate(10px, -30px) rotate(15deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-90px, 20px) rotate(-7deg);
+  }
+  55% {
+    opacity: 1;
+    transform: translate(-110px, 95px) rotate(-10deg);
+  }
+  75% {
+    opacity: 1;
+    transform: translate(-90px, 5px) rotate(4deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(20px, -25px) rotate(20deg);
+  }
+}
+@keyframes cutting-wing {
+  20%,
+  70% {
+    transform: rotate(20deg);
+  }
+}
+@keyframes slide-the-slice {
+  0%,
+  55% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(82px, 16px) rotate(6deg);
+  }
+}
+@keyframes eat-the-slice {
+  0% {
+    opacity: 1;
+    transform: translate(82px, 16px) rotate(6deg);
+  }
+  40% {
+    opacity: 1;
+    transform: translate(-35px, -140px) rotate(-16deg) scale(0.8);
+  }
+  65% {
+    opacity: 1;
+    transform: translate(-50px, -151px) scale(0.55);
+  }
+  85%,
+  100% {
+    opacity: 0;
+    transform: translate(-50px, -155px) scale(0.05);
+  }
+}
+@keyframes eating-wing {
+  25%,
+  75% {
+    transform: rotate(51deg);
+  }
+}
+@keyframes happy-munch {
+  40%,
+  65%,
+  80% {
+    transform: translateY(3px) rotate(-2deg);
+  }
+  55%,
+  72% {
+    transform: translateY(-3px) rotate(1deg);
+  }
+}
+@keyframes nom-nom {
+  50% {
+    transform: scaleY(0.4);
+  }
+}
+@keyframes owl-groove {
+  0%,
+  100% {
+    transform: translate(-8px, 0) rotate(-5deg);
+  }
+  25% {
+    transform: translate(0, -15px) rotate(0);
+  }
+  50% {
+    transform: translate(8px, 0) rotate(5deg);
+  }
+  75% {
+    transform: translate(0, -15px) rotate(0);
+  }
+}
+@keyframes wing-party {
+  from {
+    transform: rotate(10deg);
+  }
+  to {
+    transform: rotate(80deg);
+  }
+}
+@keyframes wing-party-right {
+  from {
+    transform: rotate(-80deg);
+  }
+  to {
+    transform: rotate(-10deg);
+  }
+}
+@keyframes foot-tap {
+  to {
+    transform: translateY(-10px) rotate(9deg);
+  }
+}
+@keyframes mirror-ball {
+  from {
+    transform: rotate(-11deg);
+  }
+  to {
+    transform: rotate(11deg);
+  }
+}
+@keyframes music-bop {
+  from {
+    transform: translateY(0) rotate(-2deg);
+  }
+  to {
+    transform: translateY(-16px) rotate(3deg);
+  }
+}
+@keyframes spotlight-sweep {
+  from {
+    transform: rotate(-18deg);
+  }
+  to {
+    transform: rotate(18deg);
+  }
+}
+@keyframes equalizer {
+  from {
+    height: 3px;
+  }
+  to {
+    height: 12px;
+  }
+}
+@media (max-width: 700px) {
+  .birthday-steps {
+    width: 300px;
+    max-width: 100%;
+    gap: 6px;
+    margin-top: 21px;
+  }
+  .step-button {
+    font-size: 10px;
+    gap: 5px;
+  }
+  .party-sound {
+    gap: 5px;
+  }
+  .party-sound .music-indicator {
+    width: 10px;
+  }
+  .dance-light {
+    width: 65%;
+  }
+  .dance-light-left {
+    left: -18%;
+  }
+  .dance-light-right {
+    right: -18%;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -1013,5 +1507,19 @@ button:active {
   }
   .wish-made .candle-smoke {
     opacity: 0;
+  }
+  .birthday-owl *,
+  .dance-light,
+  .music-indicator i {
+    animation: none !important;
+  }
+  .is-blowing .owl-breath {
+    opacity: 1;
+  }
+  .is-dancing .owl-wing-left {
+    transform: rotate(60deg);
+  }
+  .is-dancing .owl-wing-right {
+    transform: rotate(-60deg);
   }
 }
